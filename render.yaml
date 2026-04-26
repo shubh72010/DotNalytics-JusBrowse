@@ -1,7 +1,7 @@
 services:
   - type: static_site
-    name: jusbrowse-analytics
-    buildCommand: bash build.sh
+    name: DotNalytics-JusBrowse
+    buildCommand: chmod +x build.sh && ./build.sh
     staticPublishPath: .
     envVars:
       - key: SUPABASE_URL
