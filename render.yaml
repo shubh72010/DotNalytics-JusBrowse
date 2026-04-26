@@ -1,0 +1,13 @@
+services:
+  - type: static_site
+    name: jusbrowse-analytics
+    buildCommand: bash build.sh
+    staticPublishPath: .
+    envVars:
+      - key: SUPABASE_URL
+        scope: build
+      - key: SUPABASE_ANON_KEY
+        scope: build
+      - key: TABLE_NAME
+        scope: build
+        value: usage_stats
