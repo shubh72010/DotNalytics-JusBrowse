@@ -315,14 +315,15 @@
   <script type="module">
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
+    // These placeholders will be replaced during build
     const SUPABASE_URL = "https://YOUR_PROJECT_ID.supabase.co";
     const SUPABASE_ANON_KEY = "YOUR_ANON_KEY";
     const TABLE_NAME = "usage_stats";
 
-    // Change these if your table uses different column names
+    // Column names - adjust if your table uses different names
     const COL_USER_ID = "user_id";
     const COL_INSTALLED = "installed";
-    const COL_LAST_OPEN = "last_open_date"; // or last_open_date
+    const COL_LAST_OPEN = "last_open_date";
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -376,10 +377,6 @@
 
     function countInRange(rows, start, end = new Date()) {
       return rows.filter(r => r._lastOpen && r._lastOpen >= start && r._lastOpen <= end).length;
-    }
-
-    function dayKey(d) {
-      return d.toISOString().slice(0, 10);
     }
 
     function buildTrend(rows) {
