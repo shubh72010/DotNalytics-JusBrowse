@@ -1,20 +1,34 @@
 #!/bin/bash
-# build.sh - Inject environment variables into index.html before deployment
+set -e
 
-# Required environment variables
-SUPABASE_URL="${SUPABASE_URL:?Error: SUPABASE_URL not set}"
-SUPABASE_ANON_KEY="${SUPABASE_ANON_KEY:?Error: SUPABASE_ANON_KEY not set}"
-TABLE_NAME="${TABLE_NAME:=usage_stats}"
+# Validate required environment variables
+if [ -z "$SUPABASE_URL" ]; then
+  echo "❌ Error: SUPABASE_URL not set"
+  exit 1
+fi
 
-echo "🔨 Building JusBrowse Analytics..."
-echo "📍 Supabase URL: $SUPABASE_URL"
-echo "📊 Table: $TABLE_NAME"
+if [ -z "$SUPABASE_ANON_KEY" ]; then
+  echo "❌ Error: SUPABASE_ANON_KEY not set"
+  exit 1
+fi
+
+TABLE_NAME="${TABLE_NAME:-usage_stats}"
+
+echo "🔨 Building JusBrowse Analytics Dashboard..."
+echo "📍 Supabase: ${SUPABASE_URL}"
+echo "📊 Table: ${TABLE_NAME}"
 
 # Replace placeholders in index.html
-sed -i.bak \
-  -e "s|YOUR_PROJECT_ID\.supabase\.co|${SUPABASE_URL#https://}|g" \
-  -e "s|YOUR_ANON_KEY|$SUPABASE_ANON_KEY|g" \
-  -e "s|usage_stats|$TABLE_NAME|g" \
-  index.html
+# Extract just the domain from SUPABASE_URL (remove https://)
+SUPABASE_DOMAIN="${SUPABASE_URL#https://}"
 
-echo "✅ Build complete! index.html ready for deployment."
+# Create backup just in case
+cp index.html index.html.bak
+
+# Use sed to replace all three placeholders
+sed -i "s|https://YOUR_PROJECT_ID\.supabase\.co|${SUPABASE_URL}|g" index.html
+sed -i "s|YOUR_ANON_KEY|${SUPABASE_ANON_KEY}|g" index.html
+sed -i "s|\"usage_stats\"|\"${TABLE_NAME}\"|g" index.html
+
+echo "✅ Build complete!"
+echo "🚀 Dashboard ready at: https://dotnalytics-jusbrowse.onrender.com"
