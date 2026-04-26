@@ -1,7 +1,7 @@
 services:
   - type: static_site
     name: DotNalytics-JusBrowse
-    buildCommand: chmod +x build.sh && ./build.sh
+    buildCommand: bash -c 'cp index.html index.html.bak && sed -i "s|https://YOUR_PROJECT_ID\.supabase\.co|$SUPABASE_URL|g" index.html && sed -i "s|YOUR_ANON_KEY|$SUPABASE_ANON_KEY|g" index.html && sed -i "s|\"usage_stats\"|\"${TABLE_NAME:-usage_stats}\"|g" index.html && echo "✅ Build complete"'
     staticPublishPath: .
     envVars:
       - key: SUPABASE_URL
